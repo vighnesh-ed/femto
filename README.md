@@ -1,7 +1,5 @@
 # Bearing RUL prediction — FEMTO-ST / PHM 2012
 
-Remaining Useful Life of rolling-element bearings from raw vibration. Full context, data quirks
-and rules are in [CLAUDE.md](CLAUDE.md); read it before changing anything.
 
 ## Setup
 
