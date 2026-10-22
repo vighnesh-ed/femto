@@ -1,0 +1,7 @@
+bearing,coverage,coverage_last25,mean_std_min,model
+Bearing3_1,0.008,0.031,9.600,cnn_lstm
+Bearing3_2,0.159,0.046,9.361,cnn_lstm
+pooled,0.124,0.043,9.416,cnn_lstm
+Bearing3_1,0.000,0.000,9.082,cnn_lstm_attn
+Bearing3_2,0.143,0.000,9.029,cnn_lstm_attn
+pooled,0.110,0.000,9.042,cnn_lstm_attn

@@ -1,0 +1,177 @@
+bearing,threshold_min,warn_at_h,lead_min,outcome,model
+Bearing1_3,5,,,missed,constant_mean
+Bearing1_3,10,,,missed,constant_mean
+Bearing1_3,20,,,missed,constant_mean
+Bearing1_3,30,,,missed,constant_mean
+Bearing1_4,5,,,missed,constant_mean
+Bearing1_4,10,,,missed,constant_mean
+Bearing1_4,20,,,missed,constant_mean
+Bearing1_4,30,,,missed,constant_mean
+Bearing1_5,5,,,missed,constant_mean
+Bearing1_5,10,,,missed,constant_mean
+Bearing1_5,20,,,missed,constant_mean
+Bearing1_5,30,,,missed,constant_mean
+Bearing1_6,5,,,missed,constant_mean
+Bearing1_6,10,,,missed,constant_mean
+Bearing1_6,20,,,missed,constant_mean
+Bearing1_6,30,,,missed,constant_mean
+Bearing1_7,5,,,missed,constant_mean
+Bearing1_7,10,,,missed,constant_mean
+Bearing1_7,20,,,missed,constant_mean
+Bearing1_7,30,,,missed,constant_mean
+Bearing2_3,5,,,missed,constant_mean
+Bearing2_3,10,,,missed,constant_mean
+Bearing2_3,20,,,missed,constant_mean
+Bearing2_3,30,,,missed,constant_mean
+Bearing2_4,5,,,missed,constant_mean
+Bearing2_4,10,,,missed,constant_mean
+Bearing2_4,20,,,missed,constant_mean
+Bearing2_4,30,,,missed,constant_mean
+Bearing2_5,5,,,missed,constant_mean
+Bearing2_5,10,,,missed,constant_mean
+Bearing2_5,20,,,missed,constant_mean
+Bearing2_5,30,,,missed,constant_mean
+Bearing2_6,5,,,missed,constant_mean
+Bearing2_6,10,,,missed,constant_mean
+Bearing2_6,20,,,missed,constant_mean
+Bearing2_6,30,,,missed,constant_mean
+Bearing2_7,5,,,missed,constant_mean
+Bearing2_7,10,,,missed,constant_mean
+Bearing2_7,20,,,missed,constant_mean
+Bearing2_7,30,,,missed,constant_mean
+Bearing3_3,5,,,missed,constant_mean
+Bearing3_3,10,,,missed,constant_mean
+Bearing3_3,20,,,missed,constant_mean
+Bearing3_3,30,,,missed,constant_mean
+Bearing1_3,5,6.447222222222222,8.833333333333332,useful,rf_row
+Bearing1_3,10,6.277777777777777,19.0,useful,rf_row
+Bearing1_3,20,6.263888888888888,19.833333333333332,useful,rf_row
+Bearing1_3,30,6.263888888888888,19.833333333333332,useful,rf_row
+Bearing1_4,5,3.0277777777777777,56.166666666666664,useful,rf_row
+Bearing1_4,10,3.025,56.33333333333333,useful,rf_row
+Bearing1_4,20,3.025,56.33333333333333,useful,rf_row
+Bearing1_4,30,3.0194444444444444,56.666666666666664,useful,rf_row
+Bearing1_5,5,6.797222222222222,2.5,useful,rf_row
+Bearing1_5,10,6.791666666666667,2.833333333333333,useful,rf_row
+Bearing1_5,20,6.791666666666667,2.833333333333333,useful,rf_row
+Bearing1_5,30,3.6777777777777776,189.66666666666666,early,rf_row
+Bearing1_6,5,6.727777777777777,4.166666666666666,useful,rf_row
+Bearing1_6,10,6.725,4.333333333333333,useful,rf_row
+Bearing1_6,20,6.725,4.333333333333333,useful,rf_row
+Bearing1_6,30,4.55,134.83333333333331,early,rf_row
+Bearing1_7,5,6.163888888888889,6.5,useful,rf_row
+Bearing1_7,10,6.15,7.333333333333333,useful,rf_row
+Bearing1_7,20,6.15,7.333333333333333,useful,rf_row
+Bearing1_7,30,6.147222222222222,7.5,useful,rf_row
+Bearing2_3,5,,,missed,rf_row
+Bearing2_3,10,0.7388888888888888,281.3333333333333,early,rf_row
+Bearing2_3,20,0.7388888888888888,281.3333333333333,early,rf_row
+Bearing2_3,30,0.7388888888888888,281.3333333333333,early,rf_row
+Bearing2_4,5,,,missed,rf_row
+Bearing2_4,10,2.069444444444444,0.8333333333333333,too late,rf_row
+Bearing2_4,20,2.069444444444444,0.8333333333333333,too late,rf_row
+Bearing2_4,30,2.069444444444444,0.8333333333333333,too late,rf_row
+Bearing2_5,5,,,missed,rf_row
+Bearing2_5,10,,,missed,rf_row
+Bearing2_5,20,,,missed,rf_row
+Bearing2_5,30,6.116666666666666,18.0,useful,rf_row
+Bearing2_6,5,1.9194444444444443,1.5,too late,rf_row
+Bearing2_6,10,1.9194444444444443,1.5,too late,rf_row
+Bearing2_6,20,1.9166666666666667,1.6666666666666665,too late,rf_row
+Bearing2_6,30,0.6527777777777778,77.5,early,rf_row
+Bearing2_7,5,,,missed,rf_row
+Bearing2_7,10,0.6305555555555554,0.3333333333333333,too late,rf_row
+Bearing2_7,20,0.6305555555555554,0.3333333333333333,too late,rf_row
+Bearing2_7,30,0.6305555555555554,0.3333333333333333,too late,rf_row
+Bearing3_3,5,1.186111111111111,1.0,too late,rf_row
+Bearing3_3,10,1.186111111111111,1.0,too late,rf_row
+Bearing3_3,20,1.1805555555555556,1.3333333333333333,too late,rf_row
+Bearing3_3,30,0.5388888888888889,39.83333333333333,useful,rf_row
+Bearing1_3,5,6.283333333333333,18.666666666666664,useful,rf_window
+Bearing1_3,10,6.272222222222222,19.333333333333332,useful,rf_window
+Bearing1_3,20,6.263888888888888,19.833333333333332,useful,rf_window
+Bearing1_3,30,2.0805555555555553,270.8333333333333,early,rf_window
+Bearing1_4,5,3.0416666666666665,55.33333333333333,useful,rf_window
+Bearing1_4,10,3.0305555555555554,56.0,useful,rf_window
+Bearing1_4,20,3.025,56.33333333333333,useful,rf_window
+Bearing1_4,30,2.561111111111111,84.16666666666666,early,rf_window
+Bearing1_5,5,6.791666666666667,2.833333333333333,useful,rf_window
+Bearing1_5,10,6.713888888888889,7.5,useful,rf_window
+Bearing1_5,20,3.191666666666667,218.83333333333331,early,rf_window
+Bearing1_5,30,3.1166666666666667,223.33333333333331,early,rf_window
+Bearing1_6,5,6.752777777777777,2.6666666666666665,useful,rf_window
+Bearing1_6,10,4.558333333333334,134.33333333333331,early,rf_window
+Bearing1_6,20,4.55,134.83333333333331,early,rf_window
+Bearing1_6,30,4.544444444444443,135.16666666666666,early,rf_window
+Bearing1_7,5,6.169444444444443,6.166666666666666,useful,rf_window
+Bearing1_7,10,6.1611111111111105,6.666666666666666,useful,rf_window
+Bearing1_7,20,6.155555555555555,7.0,useful,rf_window
+Bearing1_7,30,6.152777777777777,7.166666666666666,useful,rf_window
+Bearing2_3,5,0.7527777777777778,280.5,early,rf_window
+Bearing2_3,10,0.7444444444444444,281.0,early,rf_window
+Bearing2_3,20,0.7388888888888888,281.3333333333333,early,rf_window
+Bearing2_3,30,0.7333333333333333,281.66666666666663,early,rf_window
+Bearing2_4,5,,,missed,rf_window
+Bearing2_4,10,2.0833333333333335,0.0,too late,rf_window
+Bearing2_4,20,2.0777777777777775,0.3333333333333333,too late,rf_window
+Bearing2_4,30,2.072222222222222,0.6666666666666666,too late,rf_window
+Bearing2_5,5,,,missed,rf_window
+Bearing2_5,10,,,missed,rf_window
+Bearing2_5,20,6.113888888888889,18.166666666666664,useful,rf_window
+Bearing2_5,30,4.533333333333333,113.0,early,rf_window
+Bearing2_6,5,1.936111111111111,0.5,too late,rf_window
+Bearing2_6,10,1.9194444444444443,1.5,too late,rf_window
+Bearing2_6,20,0.875,64.16666666666666,early,rf_window
+Bearing2_6,30,0.7722222222222221,70.33333333333333,early,rf_window
+Bearing2_7,5,,,missed,rf_window
+Bearing2_7,10,0.6361111111111111,0.0,too late,rf_window
+Bearing2_7,20,0.6333333333333333,0.16666666666666666,too late,rf_window
+Bearing2_7,30,0.6305555555555554,0.3333333333333333,too late,rf_window
+Bearing3_3,5,,,missed,rf_window
+Bearing3_3,10,1.1944444444444442,0.5,too late,rf_window
+Bearing3_3,20,0.5777777777777777,37.5,useful,rf_window
+Bearing3_3,30,0.45,45.166666666666664,useful,rf_window
+Bearing1_3,5,6.369444444444444,13.5,useful,cnn_lstm
+Bearing1_3,10,6.358333333333333,14.166666666666666,useful,cnn_lstm
+Bearing1_3,20,6.294444444444443,18.0,useful,cnn_lstm
+Bearing1_3,30,6.277777777777777,19.0,useful,cnn_lstm
+Bearing1_4,5,3.0388888888888888,55.5,useful,cnn_lstm
+Bearing1_4,10,3.036111111111111,55.666666666666664,useful,cnn_lstm
+Bearing1_4,20,3.0222222222222217,56.5,useful,cnn_lstm
+Bearing1_4,30,3.0166666666666666,56.83333333333333,useful,cnn_lstm
+Bearing1_5,5,6.811111111111111,1.6666666666666665,too late,cnn_lstm
+Bearing1_5,10,6.802777777777777,2.1666666666666665,useful,cnn_lstm
+Bearing1_5,20,6.730555555555555,6.5,useful,cnn_lstm
+Bearing1_5,30,6.713888888888889,7.5,useful,cnn_lstm
+Bearing1_6,5,6.769444444444444,1.6666666666666665,too late,cnn_lstm
+Bearing1_6,10,6.763888888888888,2.0,useful,cnn_lstm
+Bearing1_6,20,4.55,134.83333333333331,early,cnn_lstm
+Bearing1_6,30,4.544444444444443,135.16666666666666,early,cnn_lstm
+Bearing1_7,5,6.191666666666666,4.833333333333333,useful,cnn_lstm
+Bearing1_7,10,6.166666666666667,6.333333333333333,useful,cnn_lstm
+Bearing1_7,20,6.155555555555555,7.0,useful,cnn_lstm
+Bearing1_7,30,4.3805555555555555,113.5,early,cnn_lstm
+Bearing2_3,5,,,missed,cnn_lstm
+Bearing2_3,10,,,missed,cnn_lstm
+Bearing2_3,20,,,missed,cnn_lstm
+Bearing2_3,30,0.7611111111111111,280.0,early,cnn_lstm
+Bearing2_4,5,,,missed,cnn_lstm
+Bearing2_4,10,,,missed,cnn_lstm
+Bearing2_4,20,,,missed,cnn_lstm
+Bearing2_4,30,2.0833333333333335,0.0,too late,cnn_lstm
+Bearing2_5,5,,,missed,cnn_lstm
+Bearing2_5,10,,,missed,cnn_lstm
+Bearing2_5,20,,,missed,cnn_lstm
+Bearing2_5,30,6.416666666666667,0.0,too late,cnn_lstm
+Bearing2_6,5,,,missed,cnn_lstm
+Bearing2_6,10,1.9444444444444442,0.0,too late,cnn_lstm
+Bearing2_6,20,1.9305555555555556,0.8333333333333333,too late,cnn_lstm
+Bearing2_6,30,1.925,1.1666666666666665,too late,cnn_lstm
+Bearing2_7,5,,,missed,cnn_lstm
+Bearing2_7,10,,,missed,cnn_lstm
+Bearing2_7,20,,,missed,cnn_lstm
+Bearing2_7,30,,,missed,cnn_lstm
+Bearing3_3,5,,,missed,cnn_lstm
+Bearing3_3,10,1.1944444444444442,0.5,too late,cnn_lstm
+Bearing3_3,20,1.186111111111111,1.0,too late,cnn_lstm
+Bearing3_3,30,1.1305555555555555,4.333333333333333,useful,cnn_lstm

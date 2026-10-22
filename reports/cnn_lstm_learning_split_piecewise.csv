@@ -1,0 +1,9 @@
+,,MAE,MAE,RMSE,RMSE,R2,R2
+,,mean,std,mean,std,mean,std
+model,bearing,,,,,,
+cnn_lstm,Bearing3_1,60.418,2.201,64.063,1.912,-6.511,0.446
+cnn_lstm,Bearing3_2,64.032,0.573,78.328,0.982,-0.025,0.026
+cnn_lstm,pooled,63.193,0.152,75.264,0.473,0.098,0.011
+cnn_lstm_attn,Bearing3_1,68.155,3.464,71.514,3.148,-8.366,0.813
+cnn_lstm_attn,Bearing3_2,64.323,1.189,77.371,1.633,-0.000,0.042
+cnn_lstm_attn,pooled,65.212,0.110,76.069,0.605,0.079,0.015

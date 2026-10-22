@@ -1,0 +1,19 @@
+# Raw PHM 2012 data: ~450 MB sparse checkout, regenerate with the command in CLAUDE.md
+data/raw/
+
+# Feature CSVs in data/features/ ARE committed - do not ignore them.
+
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.venv/
+venv/
+*.pt
+*.pth
+.DS_Store
+Thumbs.db
+
+CLAUDE.md
+Project_3_FEMTO_ST_RUL_Prediction.docx
+

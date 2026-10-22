@@ -1,0 +1,5 @@
+bearing,0%-25%,25%-50%,50%-75%,75%-100%,model
+Bearing3_1,35.4,52.2,71.4,83.6,cnn_lstm
+Bearing3_2,129.1,66.0,17.0,47.2,cnn_lstm
+Bearing3_1,44.0,58.5,75.5,97.1,cnn_lstm_attn
+Bearing3_2,124.4,55.1,20.2,58.9,cnn_lstm_attn
