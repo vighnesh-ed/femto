@@ -5,7 +5,10 @@ import pytest
 torch = pytest.importorskip("torch")
 
 from src.evaluate import interval_coverage, results_frame  # noqa: E402
+from src.models.cnn1d import CNN1D  # noqa: E402
 from src.models.cnn_lstm import CNNLSTM  # noqa: E402
+from src.models.mlp import MLP  # noqa: E402
+from src.models.recurrent import RecurrentRegressor  # noqa: E402
 from src.models.training import TrainConfig, fit, mc_dropout_predict, predict, select_epochs  # noqa: E402
 from src.windows import WindowSet, make_split  # noqa: E402
 from tests.test_labels_windows import _fake_bearing  # noqa: E402
@@ -29,6 +32,16 @@ def test_cnn_lstm_shapes(attention):
         np.testing.assert_allclose(alpha.sum(dim=1).detach().numpy(), 1.0, rtol=1e-5)
     else:
         assert alpha is None
+
+
+@pytest.mark.parametrize("make", [lambda: RecurrentRegressor(4, "lstm"), lambda: RecurrentRegressor(4, "gru"),
+                                  lambda: CNN1D(4, window=10), lambda: MLP(4, window=10)])
+def test_ported_models_shapes_and_learn(make):
+    assert make()(torch.randn(8, 10, 4)).shape == (8,)
+    ws = _toy_windows()
+    model, hist = fit(make, ws, y_scale=100, cfg=TrainConfig(epochs=15, batch_size=32, lr=3e-3))
+    assert hist.train_mse.iloc[-1] < 0.5 * hist.train_mse.iloc[0]
+    assert predict(model, ws.X, 100).shape == (len(ws.y),)
 
 
 def test_fit_learns_and_is_deterministic():

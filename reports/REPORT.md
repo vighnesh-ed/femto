@@ -1,35 +1,44 @@
 # Bearing RUL Prediction on FEMTO-ST / PHM 2012: Progress Report
 
-Status as of 7 October 2026. Code is on branch `cnn-lstm`. Every number in this report was
-produced by the code in this repository; section 11 has the commands to reproduce it.
+Status as of 29 October 2026. Every number in this report was produced by the code in this
+repository; section 11 has the commands to reproduce it.
 
 ## 1. Summary
 
 **What was done.** The full pipeline from raw vibration files to RUL predictions is built and
 tested: loader, 20 features per snapshot, health indicator and RUL labels, sliding windows,
-classical baselines (Ridge, Random Forest), a 1D-CNN-LSTM with an attention variant and
-MC-dropout uncertainty, the official PHM 2012 test-set benchmark, and a maintenance-warning
-prototype. 34 automated tests cover the data quirks, the feature maths, the labels, the
-windowing, the training code, the benchmark scoring and the warning rule.
+classical baselines (Ridge, Random Forest), five deep models (MLP, LSTM, GRU, 1D-CNN and a
+1D-CNN-LSTM with an attention variant and MC-dropout uncertainty), the official PHM 2012 test-set
+benchmark, and a maintenance-warning prototype. 38 automated tests cover the data quirks, the
+feature maths, the labels, the windowing, the training code, the benchmark scoring and the
+warning rule.
 
-Every model was evaluated twice:
+The baselines and the CNN-LSTM were evaluated twice:
 - **Validation split:** train on Bearing1_1, 1_2, 2_1, 2_2; test on Bearing3_1, 3_2.
 - **Official PHM 2012 protocol:** train on all 6 learning bearings; test on the 11 test bearings.
+
+The MLP, LSTM, GRU and 1D-CNN (architectures from the group's original Keras notebooks, ported
+to the shared PyTorch pipeline) were run on the official protocol only.
 
 **Main findings**
 
 1. **The CNN-LSTM effectively ties the best baseline.** On the validation split its mean
    absolute error is 63.2 ± 0.2 min, against 63.6 min for the Random Forest. Attention makes it
    slightly worse (65.2 min).
-2. **On the official test set, no model reliably beats a constant "predict the average"
+2. **On the official test set, almost no model beats a constant "predict the average"
    baseline.** The best official score (Random Forest, 0.257) is a lucky single snapshot: scored
    at any point in the 5 minutes before the official cut, the same model gets 0.065 to 0.257,
-   averaging 0.161. The constant baseline averages 0.156.
+   averaging 0.161. The constant baseline averages 0.156. The one exception is the plain
+   1D-CNN, which averages 0.201 (0.180 at the cut), but it also has the worst full-curve error
+   and predicts early more often, so part of that gain may be a bias toward low predictions
+   (section 6.2). The LSTM, GRU, MLP and CNN-LSTM all score below the constant.
 3. **The cause is in the data: most bearings fail abruptly.** 6 of the 11 test bearings show
    no degradation at their cut point, yet their true remaining life ranges from 10 to 126 min.
    Vibration features cannot tell these bearings apart.
 4. **Deep models overfit to the training bearings within 1–2 epochs.** Error on a held-out
-   training bearing is lowest after 1–2 epochs and rises with any further training.
+   training bearing is lowest after 1–2 epochs and rises with any further training. All six
+   deep models (CNN-LSTM, its attention variant, LSTM, GRU, MLP, 1D-CNN) chose 1 epoch on the
+   benchmark, except the 1D-CNN, which chose 2.
 5. **MC-dropout uncertainty is badly overconfident.** The ±2σ band contains the true RUL only
    11–12% of the time; a calibrated band would contain it about 95% of the time.
 6. **A simple warning rule gives useful warning for 5 of 11 test bearings.** The rule raises an
@@ -102,7 +111,7 @@ Lifetimes range from 38 min (Bearing2_7) to 7.8 h (Bearing1_1), a 12× spread.
 | 2 Features | [`src/features.py`](../src/features.py) | 20 features per snapshot → `data/features/<Bearing>.csv` (the team contract) |
 | 3 Labels | [`src/labels.py`](../src/labels.py) | knee point, health indicator, linear and piecewise RUL |
 | 4 Windows | [`src/windows.py`](../src/windows.py) | 30-snapshot windows, scaling, leak-free train/test split |
-| 5 Models | [`src/models/`](../src/models/) | baselines, shared PyTorch training code, CNN-LSTM |
+| 5 Models | [`src/models/`](../src/models/) | baselines, shared PyTorch training code, MLP, LSTM/GRU, 1D-CNN, CNN-LSTM |
 | Evaluation | [`src/evaluate.py`](../src/evaluate.py), [`src/benchmark.py`](../src/benchmark.py) | metrics, plots, official test protocol |
 | Decision | [`src/maintenance.py`](../src/maintenance.py) | RUL → maintenance warning, and its evaluation |
 
@@ -152,8 +161,16 @@ bearings take 4.8 MB and are committed, so only one person needs the raw data.
 | Constant | none | always predicts the mean training target (the floor) |
 | Ridge | last snapshot, or flattened window | α = 1, untuned |
 | Random Forest | last snapshot, or flattened window | 200 trees, min leaf 5, 33% of features per split, untuned |
+| MLP | 30 × 20 window, flattened | Linear 128 → 64 → 32 → 1, batch norm and dropout 0.2 |
+| LSTM / GRU | 30 × 20 window | one recurrent layer (32) → dropout 0.1 → Linear 16 → 1 |
+| 1D-CNN | 30 × 20 window | Conv1d 20→32→64 (kernel 3, batch norm), max-pool 2 → Linear 32 → 16 → 1; dropout 0.2 |
 | CNN-LSTM | 30 × 20 window | Conv1d 20→32→64 (kernel 3) → LSTM (64) → linear; dropout 0.2; 41.5k parameters |
 | CNN-LSTM + attention | 30 × 20 window | as above, with learned attention pooling over the 30 steps; 45.7k parameters |
+
+The MLP, LSTM, GRU and 1D-CNN follow the layer layout of the group's original Keras notebooks.
+Those notebooks trained with Huber loss, Adam and a validation split taken from the end of the
+training array; here every deep model goes through the same shared code instead, so the numbers
+are comparable with each other and with the baselines.
 
 The deep models are trained with MSE on RUL / cap, AdamW (learning rate 10⁻³, weight decay
 10⁻⁴), batch size 128 and gradient clipping at 1.0. The epoch count is searched up to 60 on the
@@ -304,22 +321,26 @@ the full runs of all 11 test bearings (17,036 windows).
 | Random Forest, window | 0.111 | 0.115 | 0.119 | 36% | 128.9 |
 | CNN-LSTM (3 seeds) | 0.069 ± 0.004 | 0.080 | 0.068 | 64% | 123.2 |
 | CNN-LSTM + attention (3 seeds) | 0.072 ± 0.013 | 0.074 | 0.065 | 64% | 123.8 |
+| LSTM (3 seeds) | 0.075 ± 0.032 | 0.070 | 0.069 | 61% | 123.0 |
+| GRU (3 seeds) | 0.083 ± 0.014 | 0.098 | 0.068 | 64% | 125.2 |
+| MLP (3 seeds) | 0.112 ± 0.043 | 0.113 | 0.119 | 61% | 127.2 |
+| **1D-CNN (3 seeds)** | 0.180 ± 0.032 | **0.201** | 0.195 | 42% | 132.3 |
 
 Predictions at the Test_set cut (seconds; deep models averaged over seeds):
 
-| Bearing | Actual | Degrading at cut | Constant | RF row | RF window | CNN-LSTM | CNN-LSTM + attn |
-|---|---|---|---|---|---|---|---|
-| 1_3 | 5730 | yes | 3248 | 2989 | 1992 | 3667 | 3580 |
-| 1_4 | 2890 | yes | 3248 | 30 | 39 | 544 | 1288 |
-| 1_5 | 1610 | no | 3248 | 1608 | 1209 | 3354 | 3491 |
-| 1_6 | 1460 | yes* | 3248 | 3165 | 2361 | 2923 | 2506 |
-| 1_7 | 7570 | no | 3248 | 2935 | 2320 | 2083 | 1856 |
-| 2_3 | 7530 | yes* | 3248 | 2993 | 1914 | 3979 | 4051 |
-| 2_4 | 1390 | no | 3248 | 3212 | 3715 | 3250 | 3686 |
-| 2_5 | 3090 | no | 3248 | 3251 | 1757 | 3633 | 3664 |
-| 2_6 | 1290 | no | 3248 | 1243 | 804 | 3788 | 3857 |
-| 2_7 | 580 | no | 3248 | 3834 | 3832 | 3695 | 3686 |
-| 3_3 | 820 | yes | 3248 | 2221 | 1365 | 2544 | 2365 |
+| Bearing | Actual | Degrading at cut | Constant | RF row | RF window | CNN-LSTM | CNN-LSTM + attn | LSTM | GRU | MLP | 1D-CNN |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1_3 | 5730 | yes | 3248 | 2989 | 1992 | 3667 | 3580 | 1188 | 1613 | 2643 | 1841 |
+| 1_4 | 2890 | yes | 3248 | 30 | 39 | 544 | 1288 | 969 | 1588 | 88 | 125 |
+| 1_5 | 1610 | no | 3248 | 1608 | 1209 | 3354 | 3491 | 3513 | 3252 | 2489 | 1920 |
+| 1_6 | 1460 | yes* | 3248 | 3165 | 2361 | 2923 | 2506 | 3425 | 2987 | 1783 | 1057 |
+| 1_7 | 7570 | no | 3248 | 2935 | 2320 | 2083 | 1856 | 2662 | 2116 | 1652 | 1514 |
+| 2_3 | 7530 | yes* | 3248 | 2993 | 1914 | 3979 | 4051 | 3898 | 3984 | 3548 | 2923 |
+| 2_4 | 1390 | no | 3248 | 3212 | 3715 | 3250 | 3686 | 3642 | 3316 | 3169 | 2648 |
+| 2_5 | 3090 | no | 3248 | 3251 | 1757 | 3633 | 3664 | 3658 | 3463 | 3272 | 2428 |
+| 2_6 | 1290 | no | 3248 | 1243 | 804 | 3788 | 3857 | 3790 | 3777 | 2112 | 1163 |
+| 2_7 | 580 | no | 3248 | 3834 | 3832 | 3695 | 3686 | 3733 | 3582 | 3063 | 3314 |
+| 3_3 | 820 | yes | 3248 | 2221 | 1365 | 2544 | 2365 | 2532 | 2892 | 1773 | 1419 |
 
 ![Random Forest (single-row) predictions on the 11 test bearings](figures/benchmark_rul_rf_row_piecewise.png)
 
@@ -332,9 +353,22 @@ Predictions at the Test_set cut (seconds; deep models averaged over seeds):
   these supply two thirds of its total. Both bearings look healthy at the cut, where the model's
   predictions swing by tens of minutes from one snapshot to the next. Averaged over the last
   5 minutes, its score falls to 0.161, level with the constant's 0.156.
-- **No model separates the healthy-looking bearings.** For the six bearings that look healthy
-  at the cut, the CNN-LSTM predicts 35–63 min every time, while the true RUL ranges from 10 to
-  126 min.
+- **No model reliably separates the healthy-looking bearings.** For the six bearings that look
+  healthy at the cut, the CNN-LSTM predicts 35–63 min every time, while the true RUL ranges from
+  10 to 126 min. The 1D-CNN is closer on three of them (1_5, 2_5 and 2_6, within about 20%),
+  but it still misses 1_7 by a factor of 5 (too low) and 2_7 by a factor of 5.7 (too high).
+- **The 1D-CNN's lead is real in the table but should not be over-read.** It beats the
+  constant on the 5-min mean (0.201 against 0.156) and has the lowest share of late predictions
+  of the deep models (42%), yet its full-curve MAE is the worst of all models (132 min), because
+  its predictions run lower than the others. The PHM score punishes late predictions much harder
+  than early ones, so a model that simply predicts lower earns more. With 11 bearings, 3 seeds
+  (std 0.032 at the cut) and no hyperparameter tuning, a 0.04 gap on the 5-min mean is a lead
+  worth checking with leave-one-bearing-out evaluation, not a settled ranking.
+- **Adding recurrence did not help here.** The LSTM, GRU and CNN-LSTM, all of which keep a
+  hidden state across the window, score below the constant on the 5-min mean (0.070, 0.098 and
+  0.080), while the MLP, which ignores time order, scores 0.113. A possible reason, not tested here, is
+  that the useful signal is a level shift in vibration rather than a temporal pattern, so a model
+  that sees the whole window at once has nothing extra to gain from remembering its order.
 - **Bearing1_4 is already visibly failing at its cut,** so every model predicts close to zero,
   against a recorded 2890 s.
 - **Many predictions are late:** depending on the model, 36–73% of the cut-point predictions
@@ -402,12 +436,16 @@ The threshold trades misses for early alarms. For the Random Forest (row), T = 5
 - **One knee rule,** which detects Bearing1_1's knee late because of its run-in.
 - **Bearing1_4's ground truth is uncertain** (section 2.4).
 - **MC-dropout was only tried at dropout 0.2.**
+- **The MLP, LSTM, GRU and 1D-CNN were only run on the official protocol,** not on the
+  validation split, and with a single set of untuned hyperparameters taken from the original
+  Keras notebooks.
 - **The validation split covers a single unseen operating condition** (condition 3).
 
 ## 10. Next steps
 
-1. **Finish the model comparison.** Add the team's GRU and 1D-CNN to the benchmark; each is a
-   one-line registration, explained in the README.
+1. **Check the 1D-CNN's lead.** It is the only model above the constant baseline on the 5-min
+   mean. Run the new models on the validation split and under leave-one-bearing-out evaluation
+   to see whether the lead holds.
 2. **Better features.** Envelope spectra around the bearing defect frequencies (BPFO, BPFI, BSF)
    are the most promising way to detect abrupt failures earlier.
 3. **Calibrated uncertainty.** Replace MC-dropout with conformal prediction intervals calibrated
@@ -424,9 +462,9 @@ python -m src.features                        # needs the raw data; feature CSVs
 python -m src.features --split Full_Test_Set
 python -m src.models.baselines                # about 1.5 min
 python -m src.models.cnn_lstm                 # about 9 min
-python -m src.benchmark                       # about 10-15 min
+python -m src.benchmark                       # all 11 models, about 12 min
 python -m src.maintenance --models constant_mean rf_row rf_window cnn_lstm   # about 5 min
-python -m pytest                              # 34 tests
+python -m pytest                              # 38 tests
 ```
 
 Runtimes are on a laptop CPU with 4 PyTorch threads. Building all 17 feature files from raw data

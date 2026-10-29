@@ -11,8 +11,8 @@ predicted window by window for MAE / RMSE / R^2 and early-vs-late-life error.
 
 Nothing from Full_Test_Set is used for training, scaling, the RUL cap or choosing epochs.
 
-Adding a model (e.g. a teammate's GRU): write `make(n_features) -> nn.Module` and register
-    MODELS["gru"] = deep_model(lambda n: GRURegressor(n))
+Adding a model: write `make(n_features) -> nn.Module` and register
+    MODELS["gru"] = deep_model(lambda n: RecurrentRegressor(n, "gru"))
 Sklearn-style models go through sklearn_model(...). Every model returns one prediction array
 per seed; metrics are averaged over seeds.
 
@@ -41,7 +41,10 @@ from src.features import load_features
 from src.labels import detect_knee
 from src.loader import EXPECTED_ACC_COUNTS, LEARNING_BEARINGS, PROJECT_ROOT, SNAPSHOT_PERIOD_S, TEST_BEARINGS
 from src.models.baselines import make_model, model_input
+from src.models.cnn1d import CNN1D
 from src.models.cnn_lstm import CNNLSTM
+from src.models.mlp import MLP
+from src.models.recurrent import RecurrentRegressor
 from src.models.training import TrainConfig, fit, predict, select_epochs, use_cpu_threads
 from src.windows import Split, make_split
 
@@ -92,6 +95,10 @@ MODELS: dict[str, ModelRunner] = {
     "rf_window": sklearn_model("rf", "window"),
     "cnn_lstm": deep_model(lambda n: CNNLSTM(n)),
     "cnn_lstm_attn": deep_model(lambda n: CNNLSTM(n, attention=True)),
+    "lstm": deep_model(lambda n: RecurrentRegressor(n, "lstm")),
+    "gru": deep_model(lambda n: RecurrentRegressor(n, "gru")),
+    "cnn1d": deep_model(lambda n: CNN1D(n)),
+    "mlp": deep_model(lambda n: MLP(n)),
 }
 
 
