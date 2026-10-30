@@ -1,7 +1,10 @@
 # Bearing RUL prediction — FEMTO-ST / PHM 2012
 
 Remaining Useful Life of rolling-element bearings from raw vibration. The results, data quirks and
-corrections to the original plan are written up in [reports/REPORT.md](reports/REPORT.md).
+corrections to the original plan are written up in [reports/REPORT.md](reports/REPORT.md). If you
+are building a dashboard or charts on the results, start with
+[reports/DASHBOARD.md](reports/DASHBOARD.md): file schemas, headline numbers and what not to show
+without context.
 
 The original FEMTO-ST download page is offline. The data is the IEEE PHM 2012 Prognostic Data
 Challenge release (17 bearings, 3 operating conditions), mirrored at
