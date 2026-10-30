@@ -175,3 +175,179 @@ Bearing3_3,5,,,missed,cnn_lstm
 Bearing3_3,10,1.1944444444444442,0.5,too late,cnn_lstm
 Bearing3_3,20,1.186111111111111,1.0,too late,cnn_lstm
 Bearing3_3,30,1.1305555555555555,4.333333333333333,useful,cnn_lstm
+Bearing1_3,5,,,missed,lstm
+Bearing1_3,10,6.5055555555555555,5.333333333333333,useful,lstm
+Bearing1_3,20,6.319444444444444,16.5,useful,lstm
+Bearing1_3,30,4.958333333333333,98.16666666666666,early,lstm
+Bearing1_4,5,,,missed,lstm
+Bearing1_4,10,3.0388888888888888,55.5,useful,lstm
+Bearing1_4,20,3.036111111111111,55.666666666666664,useful,lstm
+Bearing1_4,30,3.025,56.33333333333333,useful,lstm
+Bearing1_5,5,6.822222222222222,1.0,too late,lstm
+Bearing1_5,10,6.813888888888888,1.5,too late,lstm
+Bearing1_5,20,6.802777777777777,2.1666666666666665,useful,lstm
+Bearing1_5,30,6.794444444444443,2.6666666666666665,useful,lstm
+Bearing1_6,5,6.772222222222222,1.5,too late,lstm
+Bearing1_6,10,6.744444444444444,3.1666666666666665,useful,lstm
+Bearing1_6,20,6.736111111111111,3.6666666666666665,useful,lstm
+Bearing1_6,30,4.538888888888889,135.5,early,lstm
+Bearing1_7,5,6.2027777777777775,4.166666666666666,useful,lstm
+Bearing1_7,10,6.194444444444444,4.666666666666666,useful,lstm
+Bearing1_7,20,6.163888888888889,6.5,useful,lstm
+Bearing1_7,30,6.127777777777777,8.666666666666666,useful,lstm
+Bearing2_3,5,,,missed,lstm
+Bearing2_3,10,,,missed,lstm
+Bearing2_3,20,,,missed,lstm
+Bearing2_3,30,0.7722222222222221,279.3333333333333,early,lstm
+Bearing2_4,5,,,missed,lstm
+Bearing2_4,10,,,missed,lstm
+Bearing2_4,20,,,missed,lstm
+Bearing2_4,30,2.075,0.5,too late,lstm
+Bearing2_5,5,,,missed,lstm
+Bearing2_5,10,,,missed,lstm
+Bearing2_5,20,,,missed,lstm
+Bearing2_5,30,1.275,308.5,early,lstm
+Bearing2_6,5,1.9416666666666667,0.16666666666666666,too late,lstm
+Bearing2_6,10,1.9333333333333333,0.6666666666666666,too late,lstm
+Bearing2_6,20,1.922222222222222,1.3333333333333333,too late,lstm
+Bearing2_6,30,1.9166666666666667,1.6666666666666665,too late,lstm
+Bearing2_7,5,,,missed,lstm
+Bearing2_7,10,,,missed,lstm
+Bearing2_7,20,,,missed,lstm
+Bearing2_7,30,0.6333333333333333,0.16666666666666666,too late,lstm
+Bearing3_3,5,,,missed,lstm
+Bearing3_3,10,,,missed,lstm
+Bearing3_3,20,1.1972222222222222,0.3333333333333333,too late,lstm
+Bearing3_3,30,1.1916666666666667,0.6666666666666666,too late,lstm
+Bearing1_3,5,,,missed,gru
+Bearing1_3,10,,,missed,gru
+Bearing1_3,20,4.847222222222222,104.83333333333333,early,gru
+Bearing1_3,30,4.575,121.16666666666666,early,gru
+Bearing1_4,5,,,missed,gru
+Bearing1_4,10,,,missed,gru
+Bearing1_4,20,3.175,47.33333333333333,useful,gru
+Bearing1_4,30,3.0277777777777777,56.166666666666664,useful,gru
+Bearing1_5,5,,,missed,gru
+Bearing1_5,10,,,missed,gru
+Bearing1_5,20,6.813888888888888,1.5,too late,gru
+Bearing1_5,30,6.713888888888889,7.5,useful,gru
+Bearing1_6,5,,,missed,gru
+Bearing1_6,10,,,missed,gru
+Bearing1_6,20,4.580555555555555,133.0,early,gru
+Bearing1_6,30,4.541666666666667,135.33333333333331,early,gru
+Bearing1_7,5,,,missed,gru
+Bearing1_7,10,,,missed,gru
+Bearing1_7,20,6.155555555555555,7.0,useful,gru
+Bearing1_7,30,6.13611111111111,8.166666666666666,useful,gru
+Bearing2_3,5,,,missed,gru
+Bearing2_3,10,,,missed,gru
+Bearing2_3,20,1.0555555555555556,262.3333333333333,early,gru
+Bearing2_3,30,0.7277777777777777,282.0,early,gru
+Bearing2_4,5,,,missed,gru
+Bearing2_4,10,,,missed,gru
+Bearing2_4,20,,,missed,gru
+Bearing2_4,30,1.025,63.5,early,gru
+Bearing2_5,5,,,missed,gru
+Bearing2_5,10,,,missed,gru
+Bearing2_5,20,1.275,308.5,early,gru
+Bearing2_5,30,1.1333333333333333,317.0,early,gru
+Bearing2_6,5,,,missed,gru
+Bearing2_6,10,,,missed,gru
+Bearing2_6,20,,,missed,gru
+Bearing2_6,30,1.9194444444444443,1.5,too late,gru
+Bearing2_7,5,,,missed,gru
+Bearing2_7,10,,,missed,gru
+Bearing2_7,20,,,missed,gru
+Bearing2_7,30,0.6305555555555554,0.3333333333333333,too late,gru
+Bearing3_3,5,,,missed,gru
+Bearing3_3,10,,,missed,gru
+Bearing3_3,20,,,missed,gru
+Bearing3_3,30,,,missed,gru
+Bearing1_3,5,6.280555555555555,18.833333333333332,useful,mlp
+Bearing1_3,10,6.277777777777777,19.0,useful,mlp
+Bearing1_3,20,5.933333333333334,39.666666666666664,useful,mlp
+Bearing1_3,30,5.291666666666667,78.16666666666666,early,mlp
+Bearing1_4,5,3.0416666666666665,55.33333333333333,useful,mlp
+Bearing1_4,10,3.036111111111111,55.666666666666664,useful,mlp
+Bearing1_4,20,3.0305555555555554,56.0,useful,mlp
+Bearing1_4,30,3.0222222222222217,56.5,useful,mlp
+Bearing1_5,5,6.83611111111111,0.16666666666666666,too late,mlp
+Bearing1_5,10,6.825,0.8333333333333333,too late,mlp
+Bearing1_5,20,6.811111111111111,1.6666666666666665,too late,mlp
+Bearing1_5,30,6.802777777777777,2.1666666666666665,useful,mlp
+Bearing1_6,5,6.791666666666667,0.3333333333333333,too late,mlp
+Bearing1_6,10,6.775,1.3333333333333333,too late,mlp
+Bearing1_6,20,4.555555555555555,134.5,early,mlp
+Bearing1_6,30,4.547222222222222,135.0,early,mlp
+Bearing1_7,5,6.2,4.333333333333333,useful,mlp
+Bearing1_7,10,6.166666666666667,6.333333333333333,useful,mlp
+Bearing1_7,20,4.3805555555555555,113.5,early,mlp
+Bearing1_7,30,3.322222222222222,177.0,early,mlp
+Bearing2_3,5,,,missed,mlp
+Bearing2_3,10,,,missed,mlp
+Bearing2_3,20,5.427777777777777,0.0,too late,mlp
+Bearing2_3,30,0.75,280.66666666666663,early,mlp
+Bearing2_4,5,,,missed,mlp
+Bearing2_4,10,,,missed,mlp
+Bearing2_4,20,,,missed,mlp
+Bearing2_4,30,,,missed,mlp
+Bearing2_5,5,,,missed,mlp
+Bearing2_5,10,,,missed,mlp
+Bearing2_5,20,,,missed,mlp
+Bearing2_5,30,,,missed,mlp
+Bearing2_6,5,,,missed,mlp
+Bearing2_6,10,,,missed,mlp
+Bearing2_6,20,1.9444444444444442,0.0,too late,mlp
+Bearing2_6,30,1.3055555555555556,38.33333333333333,useful,mlp
+Bearing2_7,5,,,missed,mlp
+Bearing2_7,10,,,missed,mlp
+Bearing2_7,20,,,missed,mlp
+Bearing2_7,30,,,missed,mlp
+Bearing3_3,5,,,missed,mlp
+Bearing3_3,10,,,missed,mlp
+Bearing3_3,20,1.1944444444444442,0.5,too late,mlp
+Bearing3_3,30,0.8083333333333333,23.666666666666664,useful,mlp
+Bearing1_3,5,6.419444444444443,10.5,useful,cnn1d
+Bearing1_3,10,6.35,14.666666666666666,useful,cnn1d
+Bearing1_3,20,1.8833333333333333,282.66666666666663,early,cnn1d
+Bearing1_3,30,1.186111111111111,324.5,early,cnn1d
+Bearing1_4,5,3.047222222222222,55.0,useful,cnn1d
+Bearing1_4,10,3.0416666666666665,55.33333333333333,useful,cnn1d
+Bearing1_4,20,3.0305555555555554,56.0,useful,cnn1d
+Bearing1_4,30,3.0194444444444444,56.666666666666664,useful,cnn1d
+Bearing1_5,5,6.811111111111111,1.6666666666666665,too late,cnn1d
+Bearing1_5,10,6.775,3.833333333333333,useful,cnn1d
+Bearing1_5,20,4.7861111111111105,123.16666666666666,early,cnn1d
+Bearing1_5,30,2.8027777777777776,242.16666666666666,early,cnn1d
+Bearing1_6,5,6.794444444444443,0.16666666666666666,too late,cnn1d
+Bearing1_6,10,6.775,1.3333333333333333,too late,cnn1d
+Bearing1_6,20,4.561111111111111,134.16666666666666,early,cnn1d
+Bearing1_6,30,2.8138888888888887,239.0,early,cnn1d
+Bearing1_7,5,6.177777777777777,5.666666666666666,useful,cnn1d
+Bearing1_7,10,6.158333333333333,6.833333333333333,useful,cnn1d
+Bearing1_7,20,6.152777777777777,7.166666666666666,useful,cnn1d
+Bearing1_7,30,5.047222222222222,73.5,early,cnn1d
+Bearing2_3,5,,,missed,cnn1d
+Bearing2_3,10,,,missed,cnn1d
+Bearing2_3,20,0.7861111111111111,278.5,early,cnn1d
+Bearing2_3,30,0.7666666666666667,279.66666666666663,early,cnn1d
+Bearing2_4,5,,,missed,cnn1d
+Bearing2_4,10,,,missed,cnn1d
+Bearing2_4,20,,,missed,cnn1d
+Bearing2_4,30,2.0805555555555553,0.16666666666666666,too late,cnn1d
+Bearing2_5,5,,,missed,cnn1d
+Bearing2_5,10,,,missed,cnn1d
+Bearing2_5,20,,,missed,cnn1d
+Bearing2_5,30,,,missed,cnn1d
+Bearing2_6,5,,,missed,cnn1d
+Bearing2_6,10,1.9416666666666667,0.16666666666666666,too late,cnn1d
+Bearing2_6,20,0.8194444444444444,67.5,early,cnn1d
+Bearing2_6,30,0.6805555555555555,75.83333333333333,early,cnn1d
+Bearing2_7,5,,,missed,cnn1d
+Bearing2_7,10,,,missed,cnn1d
+Bearing2_7,20,,,missed,cnn1d
+Bearing2_7,30,,,missed,cnn1d
+Bearing3_3,5,1.1972222222222222,0.3333333333333333,too late,cnn1d
+Bearing3_3,10,1.1916666666666667,0.6666666666666666,too late,cnn1d
+Bearing3_3,20,0.5694444444444444,38.0,useful,cnn1d
+Bearing3_3,30,0.3444444444444444,51.5,useful,cnn1d

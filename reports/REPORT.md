@@ -9,22 +9,23 @@ repository; section 11 has the commands to reproduce it.
 tested: loader, 20 features per snapshot, health indicator and RUL labels, sliding windows,
 classical baselines (Ridge, Random Forest), five deep models (MLP, LSTM, GRU, 1D-CNN and a
 1D-CNN-LSTM with an attention variant and MC-dropout uncertainty), the official PHM 2012 test-set
-benchmark, and a maintenance-warning prototype. 38 automated tests cover the data quirks, the
+benchmark, and a maintenance-warning prototype. 39 automated tests cover the data quirks, the
 feature maths, the labels, the windowing, the training code, the benchmark scoring and the
 warning rule.
 
-The baselines and the CNN-LSTM were evaluated twice:
+Every model was evaluated twice:
 - **Validation split:** train on Bearing1_1, 1_2, 2_1, 2_2; test on Bearing3_1, 3_2.
 - **Official PHM 2012 protocol:** train on all 6 learning bearings; test on the 11 test bearings.
 
-The MLP, LSTM, GRU and 1D-CNN (architectures from the group's original Keras notebooks, ported
-to the shared PyTorch pipeline) were run on the official protocol only.
+The MLP, LSTM, GRU and 1D-CNN are the group's architectures from their original Keras
+notebooks, ported to the shared PyTorch pipeline.
 
 **Main findings**
 
-1. **The CNN-LSTM effectively ties the best baseline.** On the validation split its mean
-   absolute error is 63.2 ± 0.2 min, against 63.6 min for the Random Forest. Attention makes it
-   slightly worse (65.2 min).
+1. **The CNN-LSTM effectively ties the best baseline, and so does every other deep model.** On
+   the validation split its mean absolute error is 63.2 ± 0.2 min, against 63.6 min for the
+   Random Forest. Attention makes it slightly worse (65.2 min). The MLP, LSTM, GRU and 1D-CNN land
+   between 63.0 and 64.3 min, so nothing separates the models on this split.
 2. **On the official test set, almost no model beats a constant "predict the average"
    baseline.** The best official score (Random Forest, 0.257) is a lucky single snapshot: scored
    at any point in the 5 minutes before the official cut, the same model gets 0.065 to 0.257,
@@ -139,6 +140,11 @@ bearings take 4.8 MB and are committed, so only one person needs the raw data.
 - **Piecewise RUL:** linear RUL capped at one global value, the median post-knee life of the
   training bearings. The cap is 110 min when training on 4 bearings and 64 min when training on
   all 6.
+- **Health indicator:** the smoothed combined RMS rescaled so that 0 is the bearing's healthy
+  level (the 5th percentile of the smoothed RMS) and 1 is its maximum. It uses the whole run, so
+  it is for plots and analysis only, never a model input. An earlier version scaled against the
+  minute 5–15 baseline instead, which ran to −10 on Bearing2_4–2_7 because their run-in transients
+  fall inside that window.
 - Models are always **evaluated against true linear RUL**, whichever target they were
   trained on.
 
@@ -215,6 +221,21 @@ What the curves show:
 - **Known limitation:** Bearing1_1's long run-in inflates its baseline, so its detected knee
   (68% of life) comes later than the visible rise (about 45%).
 
+### Health indicator
+
+![Health indicator of the six learning bearings, with the detected knee](figures/health_indicator.png)
+
+![Health indicator of the eleven test bearings](figures/health_indicator_test.png)
+
+- **Eleven of 17 bearings end at the indicator's maximum** (1.0 at the last snapshot): 1_1, 1_2,
+  2_1, 3_1, 3_2, 1_3, 1_4, 1_5, 1_6, 1_7 and 3_3. For these the indicator is a usable
+  degradation signal, though for the abrupt ones (1_2, 3_1, 3_2, 1_5, 1_7) it only rises in the
+  last minutes.
+- **The other six do not.** Bearing2_3 to 2_7 peak within the first 17% of life, on a run-in
+  transient or a short burst that is larger than the failure itself, so they end at 0.02–0.67.
+  Bearing2_2 peaks at 59% of life and ends at 0.85. This is why 2_4 to 2_7 have no detectable
+  knee, and why a vibration-level indicator alone cannot rank these bearings by health.
+
 ## 5. Experiment 1: validation split
 
 The models train on 1_1, 1_2, 2_1, 2_2 (5,266 windows) and are tested on 3_1, 3_2 (2,094
@@ -235,14 +256,24 @@ Error in minutes against true RUL. Deep models: mean ± std over 3 seeds.
 | Ridge | window | piecewise | 68.7 | 71.9 | 71.2 | 87.9 | −0.23 |
 | Random Forest | row | piecewise | 61.4 | 65.9 | 64.9 | 76.2 | 0.08 |
 | Random Forest | window | piecewise | 60.8 | 64.4 | 63.6 | 75.3 | 0.10 |
-| **CNN-LSTM** | window | piecewise | 60.4 ± 2.2 | 64.0 ± 0.6 | **63.2 ± 0.2** | 75.3 ± 0.5 | 0.10 |
+| CNN-LSTM | window | piecewise | 60.4 ± 2.2 | 64.0 ± 0.6 | 63.2 ± 0.2 | 75.3 ± 0.5 | 0.10 |
 | CNN-LSTM + attention | window | piecewise | 68.2 ± 3.5 | 64.3 ± 1.2 | 65.2 ± 0.1 | 76.1 ± 0.6 | 0.08 |
+| MLP | window | piecewise | 58.6 ± 2.4 | 64.3 ± 1.2 | 63.0 ± 0.4 | 76.3 ± 1.0 | 0.07 |
+| LSTM | window | piecewise | 62.0 ± 0.8 | 64.5 ± 1.7 | 63.9 ± 1.2 | 76.6 ± 1.7 | 0.07 |
+| GRU | window | piecewise | 54.2 ± 5.9 | 67.3 ± 3.0 | 64.3 ± 1.1 | 78.7 ± 2.4 | 0.01 |
+| 1D-CNN | window | piecewise | 58.9 ± 3.2 | 64.6 ± 2.8 | 63.2 ± 1.4 | 76.3 ± 2.6 | 0.07 |
 
 - **The piecewise target beats the linear one for every model.** Ridge on single rows, for
   example, improves from 186 to 66 min.
 - **The CNN-LSTM and the best Random Forest are effectively tied.** The CNN-LSTM is ahead by
   0.4 min (0.6%), which is negligible in practice. The Random Forest was only run with one seed,
   so its own run-to-run spread is unknown.
+- **The four ported models tie as well.** Pooled MAE is 63.0 (MLP), 63.2 (1D-CNN), 63.9 (LSTM)
+  and 64.3 min (GRU), with seed spreads of 0.4–1.4 min, so the order among them and the
+  CNN-LSTM (63.2) is not meaningful. The MLP, which ignores time order, is nominally the best.
+  The 1D-CNN's lead on the official benchmark (section 6) does not appear here.
+- **The GRU is best on 3_1 and worst on 3_2** (54.2 ± 5.9 and 67.3 ± 3.0 min), with the
+  largest seed spread of any model, so its pooled result hides a split between the two bearings.
 - **Per-bearing R² is strongly negative for 3_1 for every model** (−6 to −140). Its true RUL
   only spans 81 minutes, so R² punishes any constant offset harshly. Pooled MAE is the more
   meaningful comparison.
@@ -263,7 +294,8 @@ Average error on the held-out training bearing:
 | CNN-LSTM error (min) | 29.6 | **28.3** | 39.6 | 44.0 | 48.9 | 48.5 |
 
 The error is lowest after 2 epochs, or 1 for the attention variant, and rises after that.
-Further training fits the training bearings, not bearings in general.
+Further training fits the training bearings, not bearings in general. The ported models choose
+the same way: 2 epochs for the MLP and LSTM, 3 for the 1D-CNN and 5 for the GRU.
 
 ### 5.3 Uncertainty (MC-dropout)
 
@@ -294,10 +326,23 @@ MAE (min) per quarter of each bearing's life:
 | CNN-LSTM | 3_2 | 129.1 | 66.0 | 17.0 | 47.2 |
 | Random Forest, window, piecewise | 3_1 | 34.3 | 51.0 | 74.2 | 77.8 |
 | Random Forest, window, piecewise | 3_2 | 131.3 | 67.8 | 17.1 | 46.0 |
+| MLP | 3_1 | 34.9 | 53.7 | 72.8 | 78.2 |
+| MLP | 3_2 | 130.7 | 64.7 | 17.5 | 43.9 |
+| LSTM | 3_1 | 35.5 | 53.3 | 73.0 | 77.4 |
+| LSTM | 3_2 | 137.5 | 71.7 | 17.8 | 42.0 |
+| GRU | 3_1 | 27.2 | 42.5 | 59.2 | 66.3 |
+| GRU | 3_2 | 145.5 | 89.8 | 24.7 | 25.4 |
+| 1D-CNN | 3_1 | 32.2 | 46.3 | 65.3 | 72.1 |
+| 1D-CNN | 3_2 | 141.7 | 82.8 | 20.5 | 31.3 |
 
 For Bearing3_1 the error *grows* toward failure: the prediction stays near the healthy level
 while the true RUL runs down to zero. Errors late in life are mostly late predictions, the
 dangerous direction.
+
+On Bearing3_2 the GRU and 1D-CNN have much lower late-life error (25.4 and 31.3 min in the last
+quarter, against 47.2 for the CNN-LSTM), but they pay for it in the second quarter (89.8 and
+82.8 min, against 66.0). That pattern fits predictions that run lower than the others, which
+helps near failure and costs accuracy before it.
 
 ## 6. Experiment 2: official PHM 2012 benchmark
 
@@ -399,9 +444,14 @@ Results at T = 10 min:
 | Random Forest, row | 5 | 4 | 1 | 1 | 3.6 min |
 | Random Forest, window | 4 | 4 | 1 | 2 | 7.1 min |
 | CNN-LSTM | 5 | 2 | 4 | 0 | 2.2 min |
+| LSTM | 4 | 2 | 5 | 0 | 3.9 min |
+| GRU | 0 | 0 | 11 | 0 | none |
+| MLP | 3 | 2 | 6 | 0 | 6.3 min |
+| 1D-CNN | 4 | 3 | 4 | 0 | 3.8 min |
 | Constant | 0 | 0 | 11 | 0 | none |
 
-The threshold trades misses for early alarms. For the Random Forest (row), T = 5 min gives
+Each model's alarms come from one training run (seed 0). The threshold trades misses for early
+alarms. For the Random Forest (row), T = 5 min gives
 5 useful alarms and 4 misses, while T = 30 min gives 5 useful, no misses and 4 early alarms
 (median warning 40 min ahead).
 
@@ -411,6 +461,15 @@ The threshold trades misses for early alarms. For the Random Forest (row), T = 5
 - **Abrupt failures leave almost no warning:** 0–1.5 min for 2_4, 2_6, 2_7 and 3_3.
 - **One early alarm comes from a transient:** a short vibration burst on 2_3 at 0.8 h triggers
   an alarm 281 min before failure.
+- **The 1D-CNN's better PHM score does not carry over to warnings.** At T = 10 it gives 4 useful
+  alarms, against 5 for the Random Forest (row) and the CNN-LSTM. At T = 20 it gives 3 useful but
+  5 early ones (it alarms more than an hour before failure), because its predictions run low.
+  The PHM score rewards that bias and a maintenance planner does not.
+- **No new model beats the Random Forest (row), which gets 5 useful alarms at all four
+  thresholds (5, 10, 20, 30 min).** The new models get at most 4, except the LSTM, which reaches
+  5 only at T = 20.
+- **The GRU never alarms at T = 5 or 10 (all 11 bearings missed),** because its predictions
+  never stay below 10 min for 3 consecutive snapshots. At T = 20 it alarms early on 4 bearings.
 - **In practice,** these models work as late-stage alarms, not long-range forecasts.
 
 ## 8. Corrections to the original plan
@@ -436,16 +495,16 @@ The threshold trades misses for early alarms. For the Random Forest (row), T = 5
 - **One knee rule,** which detects Bearing1_1's knee late because of its run-in.
 - **Bearing1_4's ground truth is uncertain** (section 2.4).
 - **MC-dropout was only tried at dropout 0.2.**
-- **The MLP, LSTM, GRU and 1D-CNN were only run on the official protocol,** not on the
-  validation split, and with a single set of untuned hyperparameters taken from the original
-  Keras notebooks.
+- **The MLP, LSTM, GRU and 1D-CNN use a single set of untuned hyperparameters** taken from the
+  original Keras notebooks, and have no MC-dropout band (they carry batch norm, which the
+  dropout sampler would put in training mode).
 - **The validation split covers a single unseen operating condition** (condition 3).
 
 ## 10. Next steps
 
 1. **Check the 1D-CNN's lead.** It is the only model above the constant baseline on the 5-min
-   mean. Run the new models on the validation split and under leave-one-bearing-out evaluation
-   to see whether the lead holds.
+   mean of the official benchmark, but it ties with every other model on the validation split.
+   Leave-one-bearing-out evaluation over all 6 learning bearings would show whether the lead holds.
 2. **Better features.** Envelope spectra around the bearing defect frequencies (BPFO, BPFI, BSF)
    are the most promising way to detect abrupt failures earlier.
 3. **Calibrated uncertainty.** Replace MC-dropout with conformal prediction intervals calibrated
@@ -462,9 +521,11 @@ python -m src.features                        # needs the raw data; feature CSVs
 python -m src.features --split Full_Test_Set
 python -m src.models.baselines                # about 1.5 min
 python -m src.models.cnn_lstm                 # about 9 min
+python -m src.models.learning_split           # MLP, LSTM, GRU, 1D-CNN on the same split, about 12 min
+python -m src.evaluate                        # degradation curves and health indicators (figures)
 python -m src.benchmark                       # all 11 models, about 12 min
-python -m src.maintenance --models constant_mean rf_row rf_window cnn_lstm   # about 5 min
-python -m pytest                              # 38 tests
+python -m src.maintenance --models constant_mean rf_row rf_window cnn_lstm lstm gru mlp cnn1d   # about 10 min
+python -m pytest                              # 39 tests
 ```
 
 Runtimes are on a laptop CPU with 4 PyTorch threads. Building all 17 feature files from raw data
@@ -480,6 +541,7 @@ All in `reports/`.
 |---|---|
 | `baselines_learning_split.csv`, `baselines_error_by_life_stage.csv` | baselines on the validation split |
 | `cnn_lstm_learning_split_piecewise.csv`, `cnn_lstm_learning_split_piecewise_per_seed.csv` | CNN-LSTM on the validation split |
+| `deep_learning_split_piecewise.csv`, `deep_learning_split_piecewise_per_seed.csv`, `deep_error_by_life_stage_piecewise.csv` | MLP, LSTM, GRU and 1D-CNN on the validation split |
 | `cnn_lstm_mc_coverage_piecewise.csv`, `cnn_lstm_error_by_life_stage_piecewise.csv` | uncertainty coverage, error by stage of life |
 | `cnn_lstm_epoch_selection_piecewise.csv`, `cnn_lstm_attn_epoch_selection_piecewise.csv` | held-out-bearing error by epoch |
 | `benchmark_summary_piecewise.csv` | official benchmark, one row per model |
@@ -487,6 +549,7 @@ All in `reports/`.
 | `benchmark_full_curves_piecewise.csv`, `benchmark_life_stage_piecewise.csv` | full-curve error per test bearing |
 | `maintenance_policy_piecewise.csv` | first alarm per bearing, threshold and model |
 | `figures/degradation_rms.png`, `figures/degradation_rms_test.png` | degradation curves with knees |
+| `figures/health_indicator.png`, `figures/health_indicator_test.png` | health indicator (0 = healthy, 1 = run maximum) with knees |
 | `figures/rul_*.png`, `figures/error_vs_life_*.png` | predictions and error vs remaining life (validation split) |
 | `figures/benchmark_rul_*.png` | predictions on the 11 test bearings, one figure per model |
 | `figures/epochs_*.png`, `figures/attention_*.png` | epoch selection, attention weights |

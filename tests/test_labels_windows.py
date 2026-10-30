@@ -4,7 +4,7 @@ import pytest
 
 from src.evaluate import phm_score
 from src.features import FEATURE_COLUMNS, SIGNAL_FEATURES
-from src.labels import detect_knee, fit_rul_cap, rul_linear, rul_piecewise
+from src.labels import detect_knee, fit_rul_cap, health_indicator, rul_linear, rul_piecewise
 from src.windows import FeatureScaler, build_windows, sliding_windows
 
 
@@ -30,6 +30,19 @@ def test_rul_labels():
 def test_knee_found_near_step():
     knee = detect_knee(_fake_bearing(600, knee=400))
     assert 400 <= knee <= 400 + 30  # within one smoothing window
+
+
+def test_health_indicator_spans_zero_to_one_despite_early_transient():
+    df = _fake_bearing(600, knee=400)
+    hi = health_indicator(df)
+    assert hi.min() == pytest.approx(0, abs=0.05) and hi.max() == pytest.approx(1)
+    assert hi[100:350].max() < 0.1 and hi[-1] > 0.9
+    # a run-in transient inflating minutes 5-15 (as in Bearing2_4..2_7) must not push it outside [0, 1]
+    df = df.copy()
+    df.loc[30:90, ["rms_h", "rms_v"]] *= 3
+    hi = health_indicator(df)
+    assert hi.min() >= 0 and hi.max() <= 1
+    assert hi[150:350].max() < 0.1
 
 
 def test_no_degradation_returns_last_index():

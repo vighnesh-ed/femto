@@ -33,11 +33,13 @@ git checkout master
 ```bash
 python -m src.features                        # raw -> data/features/<Bearing>.csv (cached)
 python -m src.features --split Full_Test_Set  # the 11 test bearings
+python -m src.evaluate                        # degradation curves + health indicators -> reports/figures/
 python -m src.models.baselines                # Ridge / RF on the default split (train 1_x,2_x -> test 3_1,3_2)
 python -m src.models.cnn_lstm                 # CNN-LSTM (+attention, MC-dropout) on the default split
+python -m src.models.learning_split           # MLP / LSTM / GRU / 1D-CNN on the same split
 python -m src.benchmark                       # official PHM 2012 protocol: 6 learning -> 11 test bearings
 python -m src.maintenance                     # warning rule replayed on the test bearings
-python -m pytest                              # 38 tests
+python -m pytest                              # 39 tests
 ```
 
 Outputs go to `reports/` (CSV tables) and `reports/figures/`.
@@ -70,7 +72,8 @@ and metrics:
    pattern (`make_split` → `select_epochs` → `fit` per seed → `predict` → `per_bearing_metrics`).
    Call `use_cpu_threads()` first on CPU: the default thread count makes these tiny models 10x slower.
 3. Register it in `src/benchmark.py`:
-   `MODELS["gru"] = deep_model(lambda n: RecurrentRegressor(n, "gru"))`, then
+   `DEEP_MODELS["gru"] = lambda n: RecurrentRegressor(n, "gru")` (the benchmark, `src.maintenance` and
+   `src.models.learning_split` all read it), then
    `python -m src.benchmark --models gru rf_row`. Note: the benchmark rewrites `reports/benchmark_*.csv`
    with only the models you ask for, so run the full registry (no `--models`) before committing results.
 

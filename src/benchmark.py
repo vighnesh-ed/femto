@@ -11,8 +11,8 @@ predicted window by window for MAE / RMSE / R^2 and early-vs-late-life error.
 
 Nothing from Full_Test_Set is used for training, scaling, the RUL cap or choosing epochs.
 
-Adding a model: write `make(n_features) -> nn.Module` and register
-    MODELS["gru"] = deep_model(lambda n: RecurrentRegressor(n, "gru"))
+Adding a model: write `make(n_features) -> nn.Module` and add it to DEEP_MODELS
+    DEEP_MODELS["gru"] = lambda n: RecurrentRegressor(n, "gru")
 Sklearn-style models go through sklearn_model(...). Every model returns one prediction array
 per seed; metrics are averaged over seeds.
 
@@ -87,18 +87,23 @@ def deep_model(make: Callable[[int], nn.Module], max_epochs: int = 30) -> ModelR
     return run
 
 
+# name -> make(n_features) -> nn.Module. Also used by src/models/learning_split.py.
+DEEP_MODELS: dict[str, Callable[[int], nn.Module]] = {
+    "cnn_lstm": lambda n: CNNLSTM(n),
+    "cnn_lstm_attn": lambda n: CNNLSTM(n, attention=True),
+    "lstm": lambda n: RecurrentRegressor(n, "lstm"),
+    "gru": lambda n: RecurrentRegressor(n, "gru"),
+    "cnn1d": lambda n: CNN1D(n),
+    "mlp": lambda n: MLP(n),
+}
+
 MODELS: dict[str, ModelRunner] = {
     "constant_mean": constant_mean(),
     "ridge_row": sklearn_model("ridge", "row"),
     "ridge_window": sklearn_model("ridge", "window"),
     "rf_row": sklearn_model("rf", "row"),
     "rf_window": sklearn_model("rf", "window"),
-    "cnn_lstm": deep_model(lambda n: CNNLSTM(n)),
-    "cnn_lstm_attn": deep_model(lambda n: CNNLSTM(n, attention=True)),
-    "lstm": deep_model(lambda n: RecurrentRegressor(n, "lstm")),
-    "gru": deep_model(lambda n: RecurrentRegressor(n, "gru")),
-    "cnn1d": deep_model(lambda n: CNN1D(n)),
-    "mlp": deep_model(lambda n: MLP(n)),
+    **{name: deep_model(make) for name, make in DEEP_MODELS.items()},
 }
 
 

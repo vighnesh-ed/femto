@@ -21,6 +21,7 @@ BASELINE_SKIP = 30   # first 5 min: run-in transient, kept out of the baseline
 BASELINE_LEN = 60    # next 10 min: healthy baseline
 KNEE_K = 3.0         # threshold = baseline mean + K * baseline std
 KNEE_PERSIST = 6     # smoothed RMS must stay above threshold for 1 min
+HEALTHY_PERCENTILE = 5.0  # health indicator's zero: this percentile of the smoothed RMS
 
 
 def vibration_rms(df: pd.DataFrame) -> np.ndarray:
@@ -64,15 +65,19 @@ def detect_knee(df: pd.DataFrame, window: int = SMOOTH_WINDOW, skip: int = BASEL
     return int(hits[0]) if hits.size else len(df) - 1
 
 
-def health_indicator(df: pd.DataFrame, window: int = SMOOTH_WINDOW) -> np.ndarray:
-    """Smoothed RMS rescaled to ~0 at the healthy baseline and 1 at its maximum.
+def health_indicator(df: pd.DataFrame, window: int = SMOOTH_WINDOW, healthy_pct: float = HEALTHY_PERCENTILE) -> np.ndarray:
+    """Smoothed RMS rescaled to 0 at the healthy level and 1 at its maximum, so it stays in [0, 1].
 
-    Uses the whole run (its max), so it is for plots and analysis only, never a model input.
+    The healthy level is a low percentile of the smoothed RMS, not the early-life baseline that
+    detect_knee uses: Bearing2_4..2_7 have run-in transients in minutes 5-15, which put that
+    baseline above their real healthy level and made the indicator run to -10.
+
+    Uses the whole run (its percentile and max), so it is for plots and analysis only, never a
+    model input.
     """
-    rms = vibration_rms(df)
-    s = smooth(rms, window)
-    mean, _ = baseline_stats(rms)
-    return (s - mean) / (s.max() - mean)
+    s = smooth(vibration_rms(df), window)
+    low = np.percentile(s, healthy_pct)
+    return np.clip((s - low) / (s.max() - low), 0.0, 1.0)
 
 
 def rul_linear(n: int) -> np.ndarray:

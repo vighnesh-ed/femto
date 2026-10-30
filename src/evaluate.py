@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from src.labels import detect_knee, smooth, vibration_rms
+from src.labels import detect_knee, health_indicator, smooth, vibration_rms
 from src.loader import PROJECT_ROOT, SNAPSHOT_PERIOD_S
 from src.windows import WindowSet
 
@@ -126,6 +126,29 @@ def plot_degradation(dfs: dict[str, pd.DataFrame], path: Path = FIGURES_DIR / "d
     return _save(fig, path)
 
 
+def plot_health_indicator(dfs: dict[str, pd.DataFrame], path: Path = FIGURES_DIR / "health_indicator.png") -> Path:
+    """Health indicator (smoothed RMS rescaled to 0 = healthy baseline, 1 = run maximum) vs time
+    for each bearing, with the detected knee. Analysis only: it uses the whole run's maximum."""
+    n = len(dfs)
+    ncols = 3
+    nrows = int(np.ceil(n / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=(5 * ncols, 3.0 * nrows), squeeze=False)
+    for ax, (bearing, df) in zip(axes.flat, dfs.items()):
+        hours = df.elapsed_s.to_numpy() / 3600
+        knee = detect_knee(df)
+        ax.plot(hours, health_indicator(df), lw=1.3, color="C0")
+        ax.axhline(0, color="0.7", lw=0.6)
+        ax.axhline(1, color="0.7", lw=0.6)
+        ax.axvline(hours[knee], color="C3", ls="--", lw=1, label=f"knee ({knee / (len(df) - 1):.0%} of life)")
+        ax.set_title(bearing)
+        ax.set_xlabel("operating time [h]")
+        ax.set_ylabel("health indicator")
+        ax.legend(fontsize=7, loc="upper left")
+    for ax in axes.flat[n:]:
+        ax.set_visible(False)
+    return _save(fig, path)
+
+
 def plot_rul_predictions(results: pd.DataFrame, path: Path, title: str = "",
                          cuts: dict[str, int] | None = None) -> Path:
     """Actual vs predicted RUL over operating time, one panel per bearing. Draws a +/-2 std band
@@ -184,3 +207,21 @@ def plot_epoch_selection(curves: pd.DataFrame, best_epoch: int, path: Path, titl
     if title:
         ax.set_title(title)
     return _save(fig, path)
+
+
+def main() -> None:
+    """Degradation figures for the report: RMS curves and health indicators, learning and test bearings."""
+    from src.features import load_features
+    from src.loader import LEARNING_BEARINGS, TEST_BEARINGS
+
+    learning = {b: load_features(b) for b in LEARNING_BEARINGS}
+    test = {b: load_features(b) for b in TEST_BEARINGS}
+    for path in (plot_degradation(learning, FIGURES_DIR / "degradation_rms.png"),
+                 plot_degradation(test, FIGURES_DIR / "degradation_rms_test.png"),
+                 plot_health_indicator(learning, FIGURES_DIR / "health_indicator.png"),
+                 plot_health_indicator(test, FIGURES_DIR / "health_indicator_test.png")):
+        print(path.relative_to(PROJECT_ROOT))
+
+
+if __name__ == "__main__":
+    main()
